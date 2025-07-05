@@ -1,48 +1,69 @@
-# 🧠 NeuroQuantix: Multimodal Financial AI Research
+# 🧠 NeuroQuantix: Advanced Financial AI Research
 
-A research and development experiment implementing a multimodal AI system for financial market prediction using OHLCV data and financial news sentiment.
+A comprehensive research and development experiment implementing advanced AI systems for financial market prediction using real market data, technical indicators, and sophisticated neural architectures.
 
 ## 📊 Project Overview
 
-NeuroQuantix combines time-series analysis with natural language processing to predict stock price movements. The system uses a hybrid architecture that fuses technical indicators with sentiment analysis from financial news.
+NeuroQuantix combines advanced time-series analysis with real market data to predict cryptocurrency and stock price movements. The system features multiple model architectures including a basic multimodal system and an advanced optimized model with enhanced features.
 
 ## 🏗️ Architecture
 
 ### Core Components:
 
-1. **TimeSeriesTransformer**
-   - Input: OHLCV data (shape: [batch_size, 30, 5])
-   - Linear projection to 64-dim embeddings
-   - 2-layer TransformerEncoder with 4 attention heads
-   - Output: Time-series embeddings [batch_size, 64]
+#### 1. Basic Multimodal System (research_experiment.py)
+- **TimeSeriesTransformer**
+  - Input: OHLCV data (shape: [batch_size, 30, 5])
+  - Linear projection to 64-dim embeddings
+  - 2-layer TransformerEncoder with 4 attention heads
+  - Output: Time-series embeddings [batch_size, 64]
 
-2. **FinBERTWrapper**
-   - Uses pretrained "yiyanghkust/finbert-tone" model
-   - Encodes financial news headlines into sentiment embeddings
-   - Output: 64-dim sentiment vectors [batch_size, 64]
+- **FinBERTWrapper**
+  - Uses pretrained "yiyanghkust/finbert-tone" model
+  - Encodes financial news headlines into sentiment embeddings
+  - Output: 64-dim sentiment vectors [batch_size, 64]
 
-3. **Cross-Attention Fusion**
-   - MultiHeadAttention layer for modality fusion
-   - Time-series embeddings as query, news embeddings as key/value
-   - Output: Fused representation [batch_size, 64]
+- **Cross-Attention Fusion**
+  - MultiHeadAttention layer for modality fusion
+  - Time-series embeddings as query, news embeddings as key/value
+  - Output: Fused representation [batch_size, 64]
 
-4. **Prediction Head**
-   - MLP: Linear(64 → 32 → 2)
-   - Binary classification: Buy/Sell signals
-   - CrossEntropyLoss for training
+#### 2. Advanced Optimized System (optimized_market_encoder.py)
+- **Enhanced Input Layer**
+  - 37 real market features including OHLCV, technical indicators, and volatility measures
+  - Multi-scale feature embedding with 256-dimensional hidden layers
+  - Robust NaN handling and data validation
+
+- **Advanced Multi-Scale Convolution**
+  - Kernel sizes: [3, 7, 15, 31] for capturing different temporal patterns
+  - Temporal convolutional residual blocks with volatility embedding
+  - Learnable volatility positional encoding
+
+- **Regime-Aware Transformer**
+  - 6-layer transformer with 16 attention heads
+  - Volatility regime detection and embedding
+  - Cross-time attention with regime-aware mechanisms
+
+- **Multi-Task Prediction Heads**
+  - Direction prediction (3-class: Down, Sideways, Up)
+  - Return prediction with confidence scoring
+  - Volatility forecasting
+  - Market regime classification
 
 ## 📈 Results
 
-### Model Performance:
+### Basic Model Performance:
 - **Training Accuracy:** 37.50%
 - **Strategy Sharpe Ratio:** 0.1212
 - **Market Sharpe Ratio:** 0.2004
 - **Model Parameters:** 110M+ (including FinBERT)
 
-### Key Insights:
-- Successfully combines temporal patterns with sentiment analysis
-- Cross-attention fusion effectively merges multimodal features
-- Demonstrates potential for real-time financial prediction
+### Advanced Model Features:
+- **Real Market Data Integration:** Live BTC-USD data via yfinance
+- **37 Technical Features:** RSI, MACD, Bollinger Bands, ADX, CCI, Williams %R, Stochastic
+- **Volatility Regime Detection:** Low/Medium/High volatility classification
+- **Enhanced Loss Functions:** Focal Loss, Weighted Cross-Entropy, Brier Score
+- **Comprehensive Metrics:** Per-class accuracy, precision, recall, F1-score
+- **Robust Error Handling:** NaN handling, shape validation, fallback mechanisms
 
 ## 🚀 Setup & Installation
 
@@ -58,74 +79,104 @@ pip install -r requirements.txt
 - pandas >= 1.5.0
 - matplotlib >= 3.5.0
 - scikit-learn >= 1.1.0
+- seaborn >= 0.11.0
+- numpy >= 1.21.0
 
-### Running the Experiment:
+### Running the Experiments:
+
+#### Basic Multimodal System:
 ```bash
 python research_experiment.py
+```
+
+#### Advanced Optimized System:
+```bash
+python NeuroQuantix_Advanced/optimized_market_encoder.py
 ```
 
 ## 📁 Project Structure
 
 ```
-MultiModal_GPT/
-├── research_experiment.py    # Main experiment script
-├── requirements.txt          # Python dependencies
-├── README.md                # This file
-├── experiment_results.png   # Generated visualizations
-└── .gitignore              # Git ignore file
+MultiModelGPT/
+├── research_experiment.py                    # Basic multimodal experiment
+├── NeuroQuantix_Advanced/
+│   ├── optimized_market_encoder.py          # Advanced optimized model
+│   ├── advanced_market_encoder.py           # Enhanced market encoder
+│   └── requirements.txt                     # Advanced dependencies
+├── requirements.txt                         # Basic dependencies
+├── README.md                               # This file
+└── .gitignore                             # Git ignore file
 ```
 
 ## 🔬 Research Methodology
 
 ### Data Processing:
-- **OHLCV Data:** Downloaded via yfinance (AAPL, 3 months)
-- **Normalization:** Z-score normalization for all features
-- **Labels:** Binary classification (1 if next day return > 0, else 0)
-- **Sequence Length:** 30 days of historical data per prediction
+- **Real Market Data:** Live BTC-USD data via yfinance API
+- **Feature Engineering:** 37 technical indicators and market features
+- **Normalization:** Robust scaling with NaN handling
+- **Labels:** 3-class direction classification (Down/Sideways/Up)
+- **Sequence Length:** 24 time steps with 37 features
 
-### Training:
-- **Optimizer:** Adam (lr=0.001)
-- **Loss Function:** CrossEntropyLoss
-- **Epochs:** 10
-- **Batch Size:** 16
+### Advanced Training:
+- **Optimizer:** Adam with learning rate 0.0005
+- **Loss Functions:** Multi-objective with focal loss and weighted cross-entropy
+- **Epochs:** 100-150 with early stopping
+- **Batch Size:** Dynamic based on data size
+- **Class Balancing:** Dynamic class weight calculation
 
-### Evaluation:
-- **Backtesting:** Simulated trading based on predictions
-- **Metrics:** Accuracy, Sharpe ratio, win rate
-- **Visualization:** Price charts, training loss, returns comparison
+### Enhanced Evaluation:
+- **Per-Class Metrics:** Precision, recall, F1-score for each direction
+- **Financial Metrics:** Sharpe ratio, max drawdown, cumulative returns
+- **Attention Analysis:** Regime-specific attention weight analysis
+- **Confidence Calibration:** Brier score for prediction confidence
 
 ## 🎯 Key Features
 
+### Basic System:
 - **Multimodal Fusion:** Combines technical and sentiment data
 - **Transformer Architecture:** State-of-the-art sequence modeling
 - **Financial Focus:** Specialized for market prediction
-- **Research-Oriented:** Clear explanations and comprehensive reporting
-- **Extensible:** Modular design for easy experimentation
 
-## 🚀 Future Enhancements
+### Advanced System:
+- **Real-Time Data:** Live market data integration
+- **Comprehensive Features:** 37 technical and market indicators
+- **Regime Awareness:** Volatility-based market state detection
+- **Robust Architecture:** Error handling and NaN management
+- **Multi-Task Learning:** Direction, return, confidence, and volatility prediction
+- **Attention Diagnostics:** Detailed attention weight analysis
+- **Production Ready:** Comprehensive error handling and validation
 
-1. **Real-time News Integration:** Connect to live financial news APIs
-2. **Multi-Asset Support:** Extend to multiple stocks and indices
-3. **Advanced Backtesting:** Implement more sophisticated trading strategies
-4. **Risk Management:** Add position sizing and stop-loss mechanisms
-5. **Hyperparameter Optimization:** Automated tuning of model parameters
-6. **Production Deployment:** Streamlit dashboard for real-time predictions
+## 🚀 Recent Improvements
+
+### Latest Updates (v2.0):
+- ✅ **Comprehensive Error Handling:** Robust NaN handling throughout the pipeline
+- ✅ **Enhanced Metrics Calculation:** Safe tensor operations and fallback mechanisms
+- ✅ **Improved Visualization:** Error-resistant plotting with fallback displays
+- ✅ **Attention Analysis:** Regime-specific attention weight analysis
+- ✅ **Production Robustness:** Extensive try-catch blocks and validation
+- ✅ **Real Market Integration:** Live BTC-USD data with 5000+ data points
+- ✅ **Advanced Architecture:** 6-layer transformer with 16 attention heads
+- ✅ **Multi-Objective Training:** Focal loss, weighted cross-entropy, and Brier score
 
 ## 📊 Visualization Output
 
-The experiment generates comprehensive visualizations including:
-- Stock price over time
-- Training loss progression
-- Cumulative returns comparison (Strategy vs Market)
-- Returns distribution analysis
+The advanced system generates comprehensive visualizations including:
+- Real-time BTC price charts with technical indicators
+- Training loss progression with validation curves
+- Per-class performance breakdown (Down/Sideways/Up)
+- Attention heatmaps for different volatility regimes
+- Performance metrics comparison
+- Volume and volatility analysis
 
 ## 🤝 Contributing
 
-This is a research project. Feel free to:
-- Experiment with different architectures
+This is an active research project. Feel free to:
+- Experiment with different architectures and features
 - Test on different assets and time periods
 - Improve the backtesting methodology
-- Add new features and capabilities
+- Add new technical indicators and features
+- Enhance the error handling and robustness
+- Optimize the model performance
 
 ## 📄 License
 
@@ -133,4 +184,4 @@ This project is for research purposes. Please ensure compliance with relevant fi
 
 ---
 
-**Note:** This is a research experiment and should not be used for actual trading without proper validation and risk management. 
+**Note:** This is a research experiment and should not be used for actual trading without proper validation and risk management. The advanced system includes comprehensive error handling and is designed for research and educational purposes. 
